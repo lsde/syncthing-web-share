@@ -1,0 +1,24 @@
+syncthing:
+  image: istepanov/syncthing
+  volumes:
+    - ./config:/home/syncthing/.config/syncthing
+    - ./data:/home/syncthing/Sync
+  ports:
+    - 127.0.0.1:8384:8384
+    - 22000:22000
+    - 21027:21027/udp
+  restart: always
+web:
+  image: python:2-alpine
+  volumes:
+    - ./data:/tmp/data:ro
+    - ./bin:/tmp/bin:ro
+  ports:
+    - 80:80
+  environment:
+    - DOMAIN=ec2.lsde.org
+    - PORT=80
+  working_dir: /tmp/data
+  command: /tmp/bin/app.py
+  restart: always
+
